@@ -31,6 +31,7 @@ public class StudentDao implements Readable<Student, Integer>, Writeable<Student
 
     @Override
     public Student getById(Integer id) {
+        Student student;
         try (Connection conn = DaoConnection.getConnection()) {
             String select = "SELECT * FROM students WHERE id = ?";
 
@@ -41,7 +42,7 @@ public class StudentDao implements Readable<Student, Integer>, Writeable<Student
 
 
             if (rs.next()) {
-                Student student = mapStudent(rs);
+                return mapStudent(rs);
             }
 
 

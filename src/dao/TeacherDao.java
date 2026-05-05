@@ -35,14 +35,14 @@ public class TeacherDao implements Readable<Teacher, Short>,
 
     @Override
     public Teacher getById(Short id) {
-        try (Connection conn = DaoConnection.getConnection()) {
-            String select = "SELECT * FROM teachers WHERE id = ?";
+        String select = "SELECT * FROM teachers WHERE id = ?";
 
-            PreparedStatement statement = conn.prepareStatement(select);
+        try (Connection conn = DaoConnection.getConnection();
+             PreparedStatement statement = conn.prepareStatement(select)) {
+
             statement.setShort(1, id);
 
             ResultSet rs = statement.executeQuery();
-
 
             if (rs.next()) {
                 Teacher teacher = new Teacher();
@@ -55,12 +55,13 @@ public class TeacherDao implements Readable<Teacher, Short>,
                 teacher.setIdentityNumber(rs.getString("identityNumber"));
                 teacher.setBirthDate(rs.getDate("birthDate").toLocalDate());
                 teacher.setRegistrationNumber(rs.getShort("registrationNumber"));
-
                 return teacher;
             }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
         return null;
     }
 
