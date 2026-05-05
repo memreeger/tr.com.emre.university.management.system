@@ -10,8 +10,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class Teacher {
+@ToString(callSuper = true)
+public class Teacher extends Person<Short> {
     private short registrationNumber;
     private List<Lesson> lessons;
 

@@ -5,7 +5,7 @@ import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@ToString
+@ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Lesson extends BaseClass<Byte> {
