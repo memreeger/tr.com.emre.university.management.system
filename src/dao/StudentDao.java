@@ -25,6 +25,7 @@ public class StudentDao implements Readable<Student, Integer>, Writeable<Student
         return instance;
     }
 
+    private final TakenLessonDao takenLessonDao = TakenLessonDao.getInstance();
 
     //READ
 
@@ -235,6 +236,7 @@ public class StudentDao implements Readable<Student, Integer>, Writeable<Student
         student.setBirthDate(rs.getDate("birthDate").toLocalDate());
         student.setSchoolNumber(rs.getShort("schoolNumber"));
         student.setGrade(rs.getDouble("grade"));
+        student.setTakenLessons(takenLessonDao.getByStudentId(student.getId()));
         return student;
     }
 }

@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class TakenLesson {
     private int studentId;
-    private Lesson lesson;
+    private short lessonId;
     private double midterm;
     private double finalExam;
     private double grade;
