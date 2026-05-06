@@ -29,6 +29,8 @@ public class TeacherDao implements Readable<Teacher, Short>,
         return instance;
     }
 
+    private final LessonTeacherDao lessonTeacherDao = LessonTeacherDao.getInstance();
+
 
     //READ
 
@@ -54,6 +56,7 @@ public class TeacherDao implements Readable<Teacher, Short>,
                 teacher.setIdentityNumber(rs.getString("identityNumber"));
                 teacher.setBirthDate(rs.getDate("birthDate").toLocalDate());
                 teacher.setRegistrationNumber(rs.getShort("registrationNumber"));
+                teacher.setLessons(lessonTeacherDao.getLessonsByTeacherId(teacher.getId()));
                 return teacher;
             }
 
@@ -84,6 +87,7 @@ public class TeacherDao implements Readable<Teacher, Short>,
                 teacher.setIdentityNumber(rs.getString("identityNumber"));
                 teacher.setBirthDate(rs.getDate("birthDate").toLocalDate());
                 teacher.setRegistrationNumber(rs.getShort("registrationNumber"));
+                teacher.setLessons(lessonTeacherDao.getLessonsByTeacherId(teacher.getId()));
                 teacherList.add(teacher);
             }
 
