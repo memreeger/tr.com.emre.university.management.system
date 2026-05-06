@@ -136,8 +136,8 @@ public class LessonDao implements LessonReadable<Lesson, Short>,
             statement.setString(1, obj.getName());
             statement.setString(2, obj.getCode());
             statement.setShort(3, obj.getCredit());
-            statement.setBoolean(3, obj.isAvailable());
-            statement.setString(4, obj.getLessonType().name());
+            statement.setBoolean(4, obj.isAvailable());
+            statement.setString(5, obj.getLessonType().name());
 
             statement.executeUpdate();
 

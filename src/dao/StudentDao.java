@@ -236,7 +236,7 @@ public class StudentDao implements Readable<Student, Integer>, Writeable<Student
         student.setBirthDate(rs.getDate("birthDate").toLocalDate());
         student.setSchoolNumber(rs.getShort("schoolNumber"));
         student.setGrade(rs.getDouble("grade"));
-        student.setTakenLessons(takenLessonDao.getByStudentId(student.getId()));
+        student.setTakenLessons(takenLessonDao.getLessonsByStudentId(student.getId()));
         return student;
     }
 }

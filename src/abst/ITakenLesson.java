@@ -5,10 +5,15 @@ import model.TakenLesson;
 import java.util.List;
 
 public interface ITakenLesson {
-    List<TakenLesson> getByStudentId(int studentId);
-    //void assignLessonToStudent(TakenLesson takenLesson);
+    List<TakenLesson> getLessonsByStudentId(int studentId);
 
-    //void updateGrade(int studentId, short lessonId, double midterm, double finalExam);
+    void assignLessonToStudent(int studentId, short lessonId);
 
-    //void removeLessonFromStudent(int studentId, short lessonId);
+    void updateMidterm(int studentId, short lessonId, double midterm);
+
+    void updateFinal(int studentId, short lessonId, double finalExam);
+
+    void updateGrade(int studentId, short lessonId);
+
+    void removeLessonFromStudent(int studentId, short lessonId);
 }

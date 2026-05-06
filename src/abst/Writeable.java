@@ -1,6 +1,5 @@
 package abst;
 
-import java.util.Optional;
 
 public interface Writeable<T, K> {
     void add(T obj);
