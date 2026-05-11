@@ -16,6 +16,10 @@ public class TakenLesson {
     private double finalExam;
     private double grade;
 
+    public double getGrade() {
+        return grade = (midterm * 0.4) + (finalExam * 0.6);
+    }
+
     @Override
     public String toString() {
         return "TakenLesson{" +

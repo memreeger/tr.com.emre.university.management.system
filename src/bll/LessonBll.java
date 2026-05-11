@@ -3,12 +3,15 @@ package bll;
 import abst.LessonReadable;
 import abst.Writeable;
 import dao.LessonDao;
+import dto.lessonDto.LessonRequestDto;
+import dto.lessonDto.LessonResponseDto;
 import model.Lesson;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class LessonBll implements LessonReadable<Lesson, Short>,
-        Writeable<Lesson, Short> {
+public class LessonBll implements LessonReadable<LessonResponseDto, Short>,
+        Writeable<LessonRequestDto, Short> {
 
     private static LessonBll instance;
 
@@ -25,13 +28,21 @@ public class LessonBll implements LessonReadable<Lesson, Short>,
     private final LessonDao dao = LessonDao.getInstance();
 
     @Override
-    public Lesson getById(Short id) {
-        return dao.getById(id);
+    public LessonResponseDto getById(Short id) {
+        Lesson lesson = dao.getById(id);
+        return toResponseDto(lesson);
+
     }
 
     @Override
-    public List<Lesson> getAll() {
-        return dao.getAll();
+    public List<LessonResponseDto> getAll() {
+        List<Lesson> lessons = dao.getAll();
+        List<LessonResponseDto> responseList = new ArrayList<>();
+
+        for (Lesson lesson : lessons) {
+            responseList.add(toResponseDto(lesson));
+        }
+        return responseList;
     }
 
     @Override
@@ -45,13 +56,15 @@ public class LessonBll implements LessonReadable<Lesson, Short>,
     }
 
     @Override
-    public void add(Lesson obj) {
-        dao.add(obj);
+    public void add(LessonRequestDto obj) {
+        Lesson lesson = toEntity(obj);
+        dao.add(lesson);
     }
 
     @Override
-    public void update(Lesson obj, Short id) {
-        dao.update(obj, id);
+    public void update(LessonRequestDto obj, Short id) {
+        Lesson lesson = toEntity(obj);
+        dao.update(lesson, id);
 
     }
 
@@ -63,5 +76,32 @@ public class LessonBll implements LessonReadable<Lesson, Short>,
     @Override
     public void deleteAll() {
         dao.deleteAll();
+    }
+
+
+    //HELPER
+    private LessonResponseDto toResponseDto(Lesson lesson) {
+        LessonResponseDto dto = new LessonResponseDto();
+
+        dto.setId(lesson.getId());
+        dto.setName(lesson.getName());
+        dto.setCode(lesson.getCode());
+        dto.setLessonType(lesson.getLessonType());
+        dto.setCredit(lesson.getCredit());
+        dto.setAvailable(lesson.isAvailable());
+
+        return dto;
+    }
+
+    private Lesson toEntity(LessonRequestDto dto) {
+        Lesson lesson = new Lesson();
+
+        lesson.setName(dto.getName());
+        lesson.setCode(dto.getCode());
+        lesson.setLessonType(dto.getLessonType());
+        lesson.setCredit(dto.getCredit());
+        lesson.setAvailable(dto.isAvailable());
+
+        return lesson;
     }
 }

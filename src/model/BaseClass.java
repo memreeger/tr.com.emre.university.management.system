@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -19,6 +20,7 @@ public class BaseClass<T> {
     private boolean isDeleted;
     private Timestamp insertedDate;
     private Timestamp lastUpdateDate;
+    private Timestamp version;
 
 
 }

@@ -2,6 +2,7 @@ package dao;
 
 import abst.LessonReadable;
 import abst.Writeable;
+import dto.lessonDto.LessonRequestDto;
 import enums.LessonType;
 import model.Lesson;
 import model.Person;
@@ -13,6 +14,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+executequery
+executeupdate
+rs rs.next
+ */
 public class LessonDao implements LessonReadable<Lesson, Short>,
         Writeable<Lesson, Short> {
 
@@ -43,7 +49,7 @@ public class LessonDao implements LessonReadable<Lesson, Short>,
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 Lesson lesson = new Lesson();
-                lesson.setId(rs.getByte("id"));
+                lesson.setId(rs.getShort("id"));
                 lesson.setDeleted(rs.getBoolean("isDeleted"));
                 lesson.setInsertedDate(rs.getTimestamp("insertedDate"));
                 lesson.setLastUpdateDate(rs.getTimestamp("lastUpdateDate"));
@@ -69,7 +75,7 @@ public class LessonDao implements LessonReadable<Lesson, Short>,
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 Lesson lesson = new Lesson();
-                lesson.setId(rs.getByte("id"));
+                lesson.setId(rs.getShort("id"));
                 lesson.setDeleted(rs.getBoolean("isDeleted"));
                 lesson.setInsertedDate(rs.getTimestamp("insertedDate"));
                 lesson.setLastUpdateDate(rs.getTimestamp("lastUpdateDate"));
@@ -128,7 +134,7 @@ public class LessonDao implements LessonReadable<Lesson, Short>,
 
         String insert = "INSERT INTO lessons " +
                 "(name, code, \"credit\", \"isAvailable\",  \"lessonType\" ) " +
-                "VALUES (?, ?, ?, ?::\"LessonType\")";
+                "VALUES (?, ?, ?, ?, ?::\"LessonType\")";
 
         try (Connection conn = DaoConnection.getConnection();
              PreparedStatement statement = conn.prepareStatement(insert)) {

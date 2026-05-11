@@ -1,18 +1,18 @@
-package model;
+package dto.baseDto;
 
 import enums.LessonType;
 import lombok.*;
 
-@Data
+
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public class Lesson extends BaseClass<Short> {
+public abstract class BaseLessonDto {
     private String name;
     private String code;
     private LessonType lessonType;
     private byte credit;
     private boolean isAvailable;
-
 }

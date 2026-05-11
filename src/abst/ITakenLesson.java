@@ -4,8 +4,8 @@ import model.TakenLesson;
 
 import java.util.List;
 
-public interface ITakenLesson {
-    List<TakenLesson> getLessonsByStudentId(int studentId);
+public interface ITakenLesson<T> {
+    List<T> getLessonsByStudentId(int studentId);
 
     void assignLessonToStudent(int studentId, short lessonId);
 

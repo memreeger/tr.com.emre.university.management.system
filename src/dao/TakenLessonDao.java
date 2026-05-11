@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TakenLessonDao implements ITakenLesson {
+public class TakenLessonDao implements ITakenLesson<TakenLesson> {
 
     private static TakenLessonDao instance;
 

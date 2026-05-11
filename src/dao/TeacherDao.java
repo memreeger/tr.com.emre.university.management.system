@@ -29,7 +29,7 @@ public class TeacherDao implements Readable<Teacher, Short>,
         return instance;
     }
 
-    private final LessonTeacherDao lessonTeacherDao = LessonTeacherDao.getInstance();
+    //private final LessonTeacherDao lessonTeacherDao = LessonTeacherDao.getInstance();
 
 
     //READ
@@ -46,18 +46,7 @@ public class TeacherDao implements Readable<Teacher, Short>,
             ResultSet rs = statement.executeQuery();
 
             if (rs.next()) {
-                Teacher teacher = new Teacher();
-                teacher.setId(rs.getShort("id"));
-                teacher.setDeleted(rs.getBoolean("isDeleted"));
-                teacher.setInsertedDate(rs.getTimestamp("insertedDate"));
-                teacher.setLastUpdateDate(rs.getTimestamp("lastUpdateDate"));
-                teacher.setFirstName(rs.getString("firstName"));
-                teacher.setLastName(rs.getString("lastName"));
-                teacher.setIdentityNumber(rs.getString("identityNumber"));
-                teacher.setBirthDate(rs.getDate("birthDate").toLocalDate());
-                teacher.setRegistrationNumber(rs.getShort("registrationNumber"));
-                teacher.setLessons(lessonTeacherDao.getLessonsByTeacherId(teacher.getId()));
-                return teacher;
+                return mapTeacher(rs);
             }
 
         } catch (SQLException e) {
@@ -77,18 +66,7 @@ public class TeacherDao implements Readable<Teacher, Short>,
 
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                Teacher teacher = new Teacher();
-                teacher.setId(rs.getShort("id"));
-                teacher.setDeleted(rs.getBoolean("isDeleted"));
-                teacher.setInsertedDate(rs.getTimestamp("insertedDate"));
-                teacher.setLastUpdateDate(rs.getTimestamp("lastUpdateDate"));
-                teacher.setFirstName(rs.getString("firstName"));
-                teacher.setLastName(rs.getString("lastName"));
-                teacher.setIdentityNumber(rs.getString("identityNumber"));
-                teacher.setBirthDate(rs.getDate("birthDate").toLocalDate());
-                teacher.setRegistrationNumber(rs.getShort("registrationNumber"));
-                teacher.setLessons(lessonTeacherDao.getLessonsByTeacherId(teacher.getId()));
-                teacherList.add(teacher);
+                teacherList.add(mapTeacher(rs));
             }
 
         } catch (SQLException e) {
@@ -143,17 +121,7 @@ public class TeacherDao implements Readable<Teacher, Short>,
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
-                Teacher teacher = new Teacher();
-                teacher.setId(rs.getShort("id"));
-                teacher.setDeleted(rs.getBoolean("isDeleted"));
-                teacher.setInsertedDate(rs.getTimestamp("insertedDate"));
-                teacher.setLastUpdateDate(rs.getTimestamp("lastUpdateDate"));
-                teacher.setFirstName(rs.getString("firstName"));
-                teacher.setLastName(rs.getString("lastName"));
-                teacher.setIdentityNumber(rs.getString("identityNumber"));
-                teacher.setBirthDate(rs.getDate("birthDate").toLocalDate());
-                teacher.setRegistrationNumber(rs.getShort("registrationNumber"));
-                teachers.add(teacher);
+                teachers.add(mapTeacher(rs));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -166,19 +134,21 @@ public class TeacherDao implements Readable<Teacher, Short>,
     @Override
     public void add(Teacher obj) {
         String insert = """
-                INSERT INTO teachers (isDeleted, insertedDate, lastUpdateDate, firstName, lastName, identityNumber, birthDate, registrationNumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?)""";
-
+                INSERT INTO teachers ("isDeleted", "firstName", "lastName", "identityNumber", "birthDate", "registrationNumber")
+                VALUES (?, ?, ?, ?, ?, ?)
+                """;
+        int order = 1;
         try (Connection conn = DaoConnection.getConnection();
              PreparedStatement statement = conn.prepareStatement(insert)) {
 
-            statement.setBoolean(1, obj.isDeleted());
-            statement.setTimestamp(2, obj.getInsertedDate());
-            statement.setTimestamp(3, obj.getLastUpdateDate());
-            statement.setString(4, obj.getFirstName());
-            statement.setString(5, obj.getLastName());
-            statement.setString(6, obj.getIdentityNumber());
-            statement.setDate(7, java.sql.Date.valueOf(obj.getBirthDate()));
-            statement.setShort(8, obj.getRegistrationNumber());
+            statement.setBoolean(order++, obj.isDeleted());
+            //statement.setTimestamp(order++, obj.getInsertedDate());
+            //statement.setTimestamp(order++, obj.getLastUpdateDate());
+            statement.setString(order++, obj.getFirstName());
+            statement.setString(order++, obj.getLastName());
+            statement.setString(order++, obj.getIdentityNumber());
+            statement.setDate(order++, java.sql.Date.valueOf(obj.getBirthDate()));
+            statement.setShort(order++, obj.getRegistrationNumber());
 
 
             statement.executeUpdate();
@@ -190,12 +160,16 @@ public class TeacherDao implements Readable<Teacher, Short>,
 
     @Override
     public void update(Teacher obj, Short id) {
+        int order = 1;
+
         try (Connection conn = DaoConnection.getConnection()) {
-            String select = "UPDATE teachers SET registrationNumber = ? WHERE id = ?";
+            String select = """
+            UPDATE teachers SET "registrationNumber" = ? WHERE id = ?
+            """;
             PreparedStatement statement = conn.prepareStatement(select);
 
-            statement.setShort(1, obj.getRegistrationNumber());
-            statement.setShort(2, id);
+            statement.setShort(order++, obj.getRegistrationNumber());
+            statement.setShort(order++, id);
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -234,16 +208,36 @@ public class TeacherDao implements Readable<Teacher, Short>,
 
     @Override
     public void updateRegistrationNumber(Short number, Short id) {
+        int order = 1;
 
-        String select = "UPDATE teachers SET registrationNumber = ?  WHERE id = ?";
+        String select = """
+        UPDATE teachers SET "registrationNumber" = ?  WHERE id = ?
+        """;
         try (Connection conn = DaoConnection.getConnection()) {
             PreparedStatement statement = conn.prepareStatement(select);
-            statement.setShort(1, number);
-            statement.setShort(2, id);
+            statement.setShort(order++, number);
+            statement.setShort(order++, id);
             statement.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Teacher mapTeacher(ResultSet rs) throws SQLException {
+        Teacher teacher = new Teacher();
+
+        teacher.setId(rs.getShort("id"));
+        teacher.setDeleted(rs.getBoolean("isDeleted"));
+        teacher.setInsertedDate(rs.getTimestamp("insertedDate"));
+        teacher.setLastUpdateDate(rs.getTimestamp("lastUpdateDate"));
+        teacher.setFirstName(rs.getString("firstName"));
+        teacher.setLastName(rs.getString("lastName"));
+        teacher.setIdentityNumber(rs.getString("identityNumber"));
+        teacher.setBirthDate(rs.getDate("birthDate").toLocalDate());
+        teacher.setRegistrationNumber(rs.getShort("registrationNumber"));
+        //teacher.setLessons(lessonTeacherDao.getLessonsByTeacherId(teacher.getId()));
+
+        return teacher;
     }
 }

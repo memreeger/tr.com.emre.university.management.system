@@ -10,7 +10,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentDao implements Readable<Student, Integer>, Writeable<Student, Integer> {
+public class StudentDao implements
+        Readable<Student, Integer>,
+        Writeable<Student, Integer> {
 
     private static StudentDao instance;
 
@@ -25,7 +27,7 @@ public class StudentDao implements Readable<Student, Integer>, Writeable<Student
         return instance;
     }
 
-    private final TakenLessonDao takenLessonDao = TakenLessonDao.getInstance();
+    //private final TakenLessonDao takenLessonDao = TakenLessonDao.getInstance();
 
     //READ
 
@@ -180,22 +182,22 @@ public class StudentDao implements Readable<Student, Integer>, Writeable<Student
 
         String insert = """
                 INSERT INTO students
-                (isDeleted, insertedDate, lastUpdateDate, firstName, lastName, identityNumber, birthDate, schoolNumber, grade)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ("isDeleted", "firstName", "lastName", "identityNumber", "birthDate", "schoolNumber", "grade")
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try (Connection conn = DaoConnection.getConnection();
              PreparedStatement statement = conn.prepareStatement(insert)) {
 
             statement.setBoolean(1, obj.isDeleted());
-            statement.setTimestamp(2, obj.getInsertedDate());
-            statement.setTimestamp(3, obj.getLastUpdateDate());
-            statement.setString(4, obj.getFirstName());
-            statement.setString(5, obj.getLastName());
-            statement.setString(6, obj.getIdentityNumber());
-            statement.setDate(7, java.sql.Date.valueOf(obj.getBirthDate()));
-            statement.setShort(8, obj.getSchoolNumber());
-            statement.setDouble(9, obj.getGrade());
+            //statement.setTimestamp(2, obj.getInsertedDate());
+            //statement.setTimestamp(3, obj.getLastUpdateDate());
+            statement.setString(2, obj.getFirstName());
+            statement.setString(3, obj.getLastName());
+            statement.setString(4, obj.getIdentityNumber());
+            statement.setDate(5, java.sql.Date.valueOf(obj.getBirthDate()));
+            statement.setShort(6, obj.getSchoolNumber());
+            statement.setDouble(7, obj.getGrade());
 
 
             statement.executeUpdate();
@@ -208,7 +210,9 @@ public class StudentDao implements Readable<Student, Integer>, Writeable<Student
     @Override
     public void update(Student obj, Integer id) {
         try (Connection conn = DaoConnection.getConnection()) {
-            String update = "UPDATE students SET schoolNumber = ? WHERE id = ?";
+            String update = """
+                    UPDATE students SET "schoolNumber" = ? WHERE id = ?
+                    """;
             PreparedStatement statement = conn.prepareStatement(update);
 
             statement.setInt(1, obj.getSchoolNumber());
@@ -236,7 +240,7 @@ public class StudentDao implements Readable<Student, Integer>, Writeable<Student
         student.setBirthDate(rs.getDate("birthDate").toLocalDate());
         student.setSchoolNumber(rs.getShort("schoolNumber"));
         student.setGrade(rs.getDouble("grade"));
-        student.setTakenLessons(takenLessonDao.getLessonsByStudentId(student.getId()));
+        //student.setTakenLessons(takenLessonDao.getLessonsByStudentId(student.getId()));
         return student;
     }
 }

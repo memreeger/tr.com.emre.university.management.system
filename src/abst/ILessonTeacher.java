@@ -5,9 +5,9 @@ import model.Lesson;
 
 import java.util.List;
 
-public interface ILessonTeacher {
+public interface ILessonTeacher<T> {
 
-    List<Lesson> getLessonsByTeacherId(short teacherId);
+    List<T> getLessonsByTeacherId(short teacherId);
 
     void assignLessonToTeacher(short teacherId, short lessonId);
 
